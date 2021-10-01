@@ -169,8 +169,8 @@ main(int argc, char *argv[])
     bzero(&de, sizeof(de));
     de.inum = xshort(inum);
     strncpy(de.name, argv[i], DIRSIZ);
-    if(de.name[0] == 'i')
-      iappend(rootino, &de, sizeof(de));
+    // if(de.name[0] == 'i')
+    //   iappend(rootino, &de, sizeof(de));
     // else
     iappend(binino, &de, sizeof(de));
 

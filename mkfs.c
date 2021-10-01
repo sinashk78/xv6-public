@@ -63,7 +63,27 @@ xint(uint x)
   a[3] = x >> 24;
   return y;
 }
+int create_directory(struct dirent* de, int parent_inum, char* name){
+  printf("BOZ: 0");
+  int dirino = ialloc(T_DIR);
 
+  bzero(de, sizeof(*de));
+  de->inum = xshort(dirino);
+  strcpy(de->name, ".");
+  iappend(dirino, de, sizeof(*de));
+
+  bzero(de, sizeof(*de));
+  de->inum = xshort(parent_inum);
+  strcpy(de->name, "..");
+  iappend(dirino, de, sizeof(*de));
+  bzero(de, sizeof(*de));
+	de->inum = xshort(dirino);
+	strcpy(de->name, name);
+	iappend(parent_inum, de, sizeof(*de));
+  bzero(de, sizeof(*de));
+
+  return dirino;
+}
 int
 main(int argc, char *argv[])
 {
@@ -127,6 +147,8 @@ main(int argc, char *argv[])
   strcpy(de.name, "..");
   iappend(rootino, &de, sizeof(de));
 
+  int binino = create_directory(&de, rootino, "bin");
+
   for(i = 2; i < argc; i++){
     assert(index(argv[i], '/') == 0);
 
@@ -147,7 +169,10 @@ main(int argc, char *argv[])
     bzero(&de, sizeof(de));
     de.inum = xshort(inum);
     strncpy(de.name, argv[i], DIRSIZ);
-    iappend(rootino, &de, sizeof(de));
+    if(de.name[0] == 'i')
+      iappend(rootino, &de, sizeof(de));
+    // else
+    iappend(binino, &de, sizeof(de));
 
     while((cc = read(fd, buf, sizeof(buf))) > 0)
       iappend(inum, buf, cc);

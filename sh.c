@@ -75,7 +75,13 @@ runcmd(struct cmd *cmd)
     ecmd = (struct execcmd*)cmd;
     if(ecmd->argv[0] == 0)
       exit();
-    exec(ecmd->argv[0], ecmd->argv);
+    char path[20];
+    strcpy(path, "/bin/");
+    char* p1 = path + 5;
+    strcpy(p1, ecmd->argv[0]);
+    p1 += strlen(ecmd->argv[0]);
+    *p1 = '\0';
+    exec(path, ecmd->argv);
     printf(2, "exec %s failed\n", ecmd->argv[0]);
     break;
 
@@ -148,7 +154,7 @@ main(void)
   int fd;
 
   // Ensure that three file descriptors are open.
-  while((fd = open("console", O_RDWR)) >= 0){
+  while((fd = open("/bin/console", O_RDWR)) >= 0){
     if(fd >= 3){
       close(fd);
       break;

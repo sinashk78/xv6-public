@@ -5,16 +5,16 @@
 #include "user.h"
 #include "fcntl.h"
 
-char *argv[] = { "sh", 0 };
+char *argv[] = { "/bin/sh", 0 };
 
 int
 main(void)
 {
   int pid, wpid;
 
-  if(open("console", O_RDWR) < 0){
-    mknod("console", 1, 1);
-    open("console", O_RDWR);
+  if(open("/bin/console", O_RDWR) < 0){
+    mknod("/bin/console", 1, 1);
+    open("/bin/console", O_RDWR);
   }
   dup(0);  // stdout
   dup(0);  // stderr
@@ -27,7 +27,7 @@ main(void)
       exit();
     }
     if(pid == 0){
-      exec("sh", argv);
+      exec("/bin/sh", argv);
       printf(1, "init: exec sh failed\n");
       exit();
     }
